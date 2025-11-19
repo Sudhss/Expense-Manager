@@ -19,8 +19,6 @@ const AddExpenseForm = ({ onClose }) => {
         }
 
         setIsLoading(true)
-
-        // Simulate processing time for better UX
         await new Promise(resolve => setTimeout(resolve, 300))
 
         addExpense(formData)
@@ -36,7 +34,6 @@ const AddExpenseForm = ({ onClose }) => {
 
     return (
         <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/20 animate-slide-up">
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center">
@@ -52,9 +49,7 @@ const AddExpenseForm = ({ onClose }) => {
                 </button>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Amount */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <DollarSign className="w-4 h-4 inline mr-1" />
@@ -69,14 +64,13 @@ const AddExpenseForm = ({ onClose }) => {
                             onChange={handleChange}
                             className="w-full pl-10 pr-4 py-4 bg-white/70 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all duration-200"
                             placeholder="0.00"
-                            min="0"
+                            min="1"
                             step="0.01"
                             required
                         />
                     </div>
                 </div>
 
-                {/* Category */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <Tag className="w-4 h-4 inline mr-1" />
@@ -97,7 +91,6 @@ const AddExpenseForm = ({ onClose }) => {
                     </select>
                 </div>
 
-                {/* Date */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <Calendar className="w-4 h-4 inline mr-1" />
@@ -113,7 +106,6 @@ const AddExpenseForm = ({ onClose }) => {
                     />
                 </div>
 
-                {/* Note */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <FileText className="w-4 h-4 inline mr-1" />
@@ -129,7 +121,6 @@ const AddExpenseForm = ({ onClose }) => {
                     />
                 </div>
 
-                {/* Buttons */}
                 <div className="flex gap-3 pt-2">
                     <button
                         type="submit"
