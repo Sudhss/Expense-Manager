@@ -34,17 +34,16 @@ const TrendChart = () => {
         const now = new Date()
 
         for (let i = 11; i >= 0; i--) {
-            const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
-            const monthName = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
-            months.push(monthName)
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+            const name = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+            months.push(name)
 
-            const monthExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date)
-                return expenseDate.getMonth() === date.getMonth() &&
-                    expenseDate.getFullYear() === date.getFullYear()
+            const monthExpenses = expenses.filter(e => {
+                const x = new Date(e.date)
+                return x.getMonth() === d.getMonth() && x.getFullYear() === d.getFullYear()
             })
 
-            const total = monthExpenses.reduce((sum, expense) => sum + expense.amount, 0)
+            const total = monthExpenses.reduce((s, e) => s + e.amount, 0)
             monthlyTotals.push(total)
         }
 
@@ -52,6 +51,14 @@ const TrendChart = () => {
     }
 
     const { months, monthlyTotals } = useMemo(() => generateMonthlyData(), [expenses])
+
+    if (monthlyTotals.every(t => t === 0)) {
+        return (
+            <div className="flex flex-col items-center justify-center h-40 text-gray-500">
+                <p className="text-sm font-medium">Not enough data</p>
+            </div>
+        )
+    }
 
     const data = useMemo(() => ({
         labels: months,
@@ -88,7 +95,7 @@ const TrendChart = () => {
                 cornerRadius: 12,
                 padding: 12,
                 callbacks: {
-                    label: (context) => `Expenses: ₹${context.parsed.y.toLocaleString('en-IN')}`
+                    label: ctx => `Expenses: ₹${ctx.parsed.y.toLocaleString('en-IN')}`
                 }
             }
         },
@@ -103,25 +110,11 @@ const TrendChart = () => {
                 ticks: {
                     color: '#6B7280',
                     font: { size: 12, weight: '500' },
-                    callback: (value) => '₹' + value.toLocaleString('en-IN')
+                    callback: v => '₹' + v.toLocaleString('en-IN')
                 }
             }
         },
         animation: { duration: 1500, easing: 'easeOutCubic' }
-    }
-
-    if (monthlyTotals.every(total => total === 0)) {
-        return (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                </div>
-                <p className="text-sm font-medium">No expense data available</p>
-                <p className="text-xs text-gray-400">Start tracking expenses to see trends</p>
-            </div>
-        )
     }
 
     return (
