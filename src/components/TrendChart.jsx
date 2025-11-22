@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useRef, useMemo } from 'react'
 import { useExpense } from '../context/ExpenseContext'
 import {
     Chart as ChartJS,
@@ -28,31 +28,29 @@ const TrendChart = () => {
     const { expenses } = useExpense()
     const chartRef = useRef(null)
 
-    const generateMonthlyData = () => {
-        const months = []
-        const monthlyTotals = []
+    const { months, totals } = useMemo(() => {
+        const m = []
+        const t = []
         const now = new Date()
 
         for (let i = 11; i >= 0; i--) {
             const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-            const name = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
-            months.push(name)
+            m.push(d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }))
 
-            const monthExpenses = expenses.filter(e => {
-                const x = new Date(e.date)
-                return x.getMonth() === d.getMonth() && x.getFullYear() === d.getFullYear()
-            })
+            const sum = expenses
+                .filter(e => {
+                    const x = new Date(e.date)
+                    return x.getMonth() === d.getMonth() && x.getFullYear() === d.getFullYear()
+                })
+                .reduce((a, e) => a + e.amount, 0)
 
-            const total = monthExpenses.reduce((s, e) => s + e.amount, 0)
-            monthlyTotals.push(total)
+            t.push(sum)
         }
 
-        return { months, monthlyTotals }
-    }
+        return { months: m, totals: t }
+    }, [expenses])
 
-    const { months, monthlyTotals } = useMemo(() => generateMonthlyData(), [expenses])
-
-    if (monthlyTotals.every(t => t === 0)) {
+    if (totals.every(x => x === 0)) {
         return (
             <div className="flex flex-col items-center justify-center h-40 text-gray-500">
                 <p className="text-sm font-medium">Not enough data</p>
@@ -65,12 +63,12 @@ const TrendChart = () => {
         datasets: [
             {
                 label: 'Monthly Expenses',
-                data: monthlyTotals,
+                data: totals,
                 borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                backgroundColor: 'rgba(59,130,246,0.1)',
                 borderWidth: 3,
                 pointBackgroundColor: '#3B82F6',
-                pointBorderColor: '#ffffff',
+                pointBorderColor: '#fff',
                 pointBorderWidth: 3,
                 pointRadius: 6,
                 pointHoverRadius: 8,
@@ -78,7 +76,7 @@ const TrendChart = () => {
                 tension: 0.4
             }
         ]
-    }), [months, monthlyTotals])
+    }), [months, totals])
 
     const options = {
         responsive: true,
@@ -95,7 +93,7 @@ const TrendChart = () => {
                 cornerRadius: 12,
                 padding: 12,
                 callbacks: {
-                    label: ctx => `Expenses: ₹${ctx.parsed.y.toLocaleString('en-IN')}`
+                    label: c => `Expenses: ₹${c.parsed.y.toLocaleString('en-IN')}`
                 }
             }
         },
