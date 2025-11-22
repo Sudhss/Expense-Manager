@@ -8,10 +8,11 @@ const ExpenseList = ({ limit, showActions = true }) => {
     const [editingExpense, setEditingExpense] = useState(null)
     const [confirmDelete, setConfirmDelete] = useState(null)
 
-    // Sort expenses by date (newest first) and apply limit if specified
     const sortedExpenses = [...expenses]
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, limit || expenses.length)
+
+    const totalSpent = sortedExpenses.reduce((sum, e) => sum + e.amount, 0)
 
     const getCategoryColor = (category) => {
         const colors = {
@@ -55,6 +56,12 @@ const ExpenseList = ({ limit, showActions = true }) => {
 
     return (
         <div className="space-y-3 h-full overflow-y-auto">
+
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/40 shadow-sm mb-3">
+                <p className="text-sm text-gray-600">Total Spent</p>
+                <p className="text-2xl font-bold text-gray-800">₹{totalSpent.toLocaleString('en-IN')}</p>
+            </div>
+
             {sortedExpenses.map((expense) => (
                 <div
                     key={expense.id}
@@ -62,7 +69,7 @@ const ExpenseList = ({ limit, showActions = true }) => {
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                            {/* Amount and Category */}
+
                             <div className="flex items-center gap-3 mb-2">
                                 <span className="text-xl font-bold text-gray-800">
                                     ₹{expense.amount.toLocaleString('en-IN')}
@@ -73,7 +80,6 @@ const ExpenseList = ({ limit, showActions = true }) => {
                                 </span>
                             </div>
 
-                            {/* Date and Note */}
                             <div className="space-y-1">
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Calendar className="w-4 h-4" />
@@ -87,7 +93,6 @@ const ExpenseList = ({ limit, showActions = true }) => {
                             </div>
                         </div>
 
-                        {/* Actions */}
                         {showActions && (
                             <div className="flex items-center gap-2 ml-4">
                                 <button
@@ -110,7 +115,6 @@ const ExpenseList = ({ limit, showActions = true }) => {
                 </div>
             ))}
 
-            {/* Edit Modal */}
             {editingExpense && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="w-full max-w-md">
@@ -122,7 +126,6 @@ const ExpenseList = ({ limit, showActions = true }) => {
                 </div>
             )}
 
-            {/* Delete Confirmation Modal */}
             {confirmDelete && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
