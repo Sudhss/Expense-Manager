@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { useExpense } from '../context/ExpenseContext'
 import {
     Chart as ChartJS,
@@ -28,7 +28,6 @@ const TrendChart = () => {
     const { expenses } = useExpense()
     const chartRef = useRef(null)
 
-    // Generate last 12 months data
     const generateMonthlyData = () => {
         const months = []
         const monthlyTotals = []
@@ -52,9 +51,9 @@ const TrendChart = () => {
         return { months, monthlyTotals }
     }
 
-    const { months, monthlyTotals } = generateMonthlyData()
+    const { months, monthlyTotals } = useMemo(() => generateMonthlyData(), [expenses])
 
-    const data = {
+    const data = useMemo(() => ({
         labels: months,
         datasets: [
             {
@@ -72,21 +71,16 @@ const TrendChart = () => {
                 tension: 0.4
             }
         ]
-    }
+    }), [months, monthlyTotals])
 
     const options = {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: {
-            intersect: false,
-            mode: 'index'
-        },
+        interaction: { intersect: false, mode: 'index' },
         plugins: {
-            legend: {
-                display: false
-            },
+            legend: { display: false },
             tooltip: {
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                backgroundColor: 'rgba(255,255,255,0.95)',
                 titleColor: '#374151',
                 bodyColor: '#374151',
                 borderColor: '#E5E7EB',
@@ -94,46 +88,26 @@ const TrendChart = () => {
                 cornerRadius: 12,
                 padding: 12,
                 callbacks: {
-                    label: (context) => {
-                        return `Expenses: ₹${context.parsed.y.toLocaleString('en-IN')}`
-                    }
+                    label: (context) => `Expenses: ₹${context.parsed.y.toLocaleString('en-IN')}`
                 }
             }
         },
         scales: {
             x: {
-                grid: {
-                    display: false
-                },
-                ticks: {
-                    color: '#6B7280',
-                    font: {
-                        size: 12,
-                        weight: '500'
-                    }
-                }
+                grid: { display: false },
+                ticks: { color: '#6B7280', font: { size: 12, weight: '500' } }
             },
             y: {
                 beginAtZero: true,
-                grid: {
-                    color: '#F3F4F6'
-                },
+                grid: { color: '#F3F4F6' },
                 ticks: {
                     color: '#6B7280',
-                    font: {
-                        size: 12,
-                        weight: '500'
-                    },
-                    callback: (value) => {
-                        return '₹' + value.toLocaleString('en-IN')
-                    }
+                    font: { size: 12, weight: '500' },
+                    callback: (value) => '₹' + value.toLocaleString('en-IN')
                 }
             }
         },
-        animation: {
-            duration: 1500,
-            easing: 'easeOutCubic'
-        }
+        animation: { duration: 1500, easing: 'easeOutCubic' }
     }
 
     if (monthlyTotals.every(total => total === 0)) {
