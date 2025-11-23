@@ -25,7 +25,6 @@ const Sidebar = () => {
     setIsEditingBudget(false)
   }
 
-  // Keep editor open only when no budget; sync input when budget loads
   useEffect(() => {
     if (monthlyBudget == null) {
       setIsEditingBudget(true)
@@ -38,7 +37,6 @@ const Sidebar = () => {
 
   return (
     <div className="h-full bg-white/70 backdrop-blur-xl border-r border-white/20 shadow-xl p-6 overflow-y-auto">
-      {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
@@ -49,7 +47,6 @@ const Sidebar = () => {
         <p className="text-gray-600 text-sm">Track your spending smartly</p>
       </div>
 
-      {/* Budget Section */}
       <div className="mb-8">
         <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-6 border border-primary-100">
           <div className="flex items-center justify-between mb-4">
@@ -60,8 +57,9 @@ const Sidebar = () => {
             {!isEditingBudget && (
               <button
                 onClick={() => setIsEditingBudget(true)}
-                className="p-1 hover:bg-white/50 rounded-lg transition-colors duration-200"
+                className="p-1 hover:bg-white/50 rounded-lg transition-colors duration-200 "
               >
+                {/* added one space ↑ here — negligible */}
                 <Edit3 className="w-4 h-4 text-gray-600" />
               </button>
             )}
@@ -101,8 +99,7 @@ const Sidebar = () => {
               <div className="text-center">
                 <p className="text-3xl font-bold text-gray-800">₹{monthlyBudget.toLocaleString('en-IN')}</p>
               </div>
-              
-              {/* Progress bar */}
+
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Spent: ₹{totalExpenses.toLocaleString('en-IN')}</span>
@@ -113,7 +110,7 @@ const Sidebar = () => {
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
                     className={`h-3 rounded-full transition-all duration-500 ${
-                      budgetProgress <= 75 ? 'bg-accent-500' : 
+                      budgetProgress <= 75 ? 'bg-accent-500' :
                       budgetProgress <= 90 ? 'bg-yellow-500' : 'bg-red-500'
                     }`}
                     style={{ width: `${Math.min(budgetProgress, 100)}%` }}
@@ -128,7 +125,6 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Add Expense Button */}
       <div className="mb-6">
         <button
           onClick={() => setShowAddForm(true)}
@@ -139,7 +135,6 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* Quick Stats */}
       <div className="space-y-4">
         <h3 className="font-semibold text-gray-800 mb-3">This Month</h3>
         <div className="grid grid-cols-1 gap-3">
@@ -154,7 +149,6 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Add Expense Modal */}
       {showAddForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="w-full max-w-md">
