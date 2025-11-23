@@ -9,7 +9,6 @@ const StatsCards = () => {
     const remainingBudget = monthlyBudget != null ? (monthlyBudget - totalExpenses) : 0
     const budgetUsedPercentage = monthlyBudget != null && monthlyBudget > 0 ? (totalExpenses / monthlyBudget) * 100 : 0
 
-    // Calculate previous month for comparison
     const now = new Date()
     const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
     const prevMonthExpenses = expenses.filter(expense => {
@@ -46,7 +45,7 @@ const StatsCards = () => {
         },
         {
             title: 'Average Per Day',
-            value: `₹${Math.round(totalExpenses / new Date().getDate()).toLocaleString('en-IN')}`,
+            value: `₹${Math.round(totalExpenses / Math.max(new Date().getDate(), 1)).toLocaleString('en-IN')}`,
             icon: TrendingDown,
             color: 'primary',
             changeText: `Based on current month`
@@ -85,8 +84,7 @@ const StatsCards = () => {
                                 <Icon className={`w-6 h-6 ${colors.text}`} />
                             </div>
                             {stat.change !== undefined && (
-                                <div className={`flex items-center gap-1 text-sm font-medium ${stat.change >= 0 ? 'text-red-500' : 'text-accent-500'
-                                    }`}>
+                                <div className={`flex items-center gap-1 text-sm font-medium ${stat.change >= 0 ? 'text-red-500' : 'text-accent-500'}`}>
                                     {stat.change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                                     {Math.abs(stat.change).toFixed(1)}%
                                 </div>
