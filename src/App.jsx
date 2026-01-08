@@ -14,7 +14,6 @@ function App() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Check authentication status on initial load
     useEffect(() => {
         const checkAuth = async () => {
             try {
@@ -24,7 +23,6 @@ function App() {
                     return;
                 }
 
-                // Optional: Validate token with the server
                 const response = await fetch('/api/auth/verify', {
                     headers: {
                         'Authorization': `Bearer ${token}`
