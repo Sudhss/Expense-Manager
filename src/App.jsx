@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
@@ -110,46 +111,48 @@ function App() {
 
     return (
         <GoogleOAuthProvider clientId={googleClientId}>
-            <ErrorBoundary>
-                <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-                    {!isAuthenticated ? (
-                        <Login 
-                            onLogin={handleLogin} 
-                            error={error} 
-                            onGoogleSuccess={handleLogin}
+            <ThemeProvider>
+                <ErrorBoundary>
+                    <div className="min-h-screen bg-background">
+                        {!isAuthenticated ? (
+                            <Login 
+                                onLogin={handleLogin} 
+                                error={error} 
+                                onGoogleSuccess={handleLogin}
+                            />
+                        ) : (
+                            <ExpenseProvider>
+                                <Dashboard onLogout={handleLogout} />
+                            </ExpenseProvider>
+                        )}
+                        <Toaster 
+                            position="top-center"
+                            toastOptions={{
+                                duration: 4000,
+                                style: {
+                                    background: '#fff',
+                                    color: '#1f2937',
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                    borderRadius: '0.75rem',
+                                    padding: '1rem 1.5rem',
+                                },
+                                success: {
+                                    iconTheme: {
+                                        primary: '#10B981',
+                                        secondary: '#fff',
+                                    },
+                                },
+                                error: {
+                                    iconTheme: {
+                                        primary: '#EF4444',
+                                        secondary: '#fff',
+                                    },
+                                },
+                            }}
                         />
-                    ) : (
-                        <ExpenseProvider>
-                            <Dashboard onLogout={handleLogout} />
-                        </ExpenseProvider>
-                    )}
-                    <Toaster 
-                        position="top-center"
-                        toastOptions={{
-                            duration: 4000,
-                            style: {
-                                background: '#fff',
-                                color: '#1f2937',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                borderRadius: '0.75rem',
-                                padding: '1rem 1.5rem',
-                            },
-                            success: {
-                                iconTheme: {
-                                    primary: '#10B981',
-                                    secondary: '#fff',
-                                },
-                            },
-                            error: {
-                                iconTheme: {
-                                    primary: '#EF4444',
-                                    secondary: '#fff',
-                                },
-                            },
-                        }}
-                    />
-                </div>
-            </ErrorBoundary>
+                    </div>
+                </ErrorBoundary>
+            </ThemeProvider>
         </GoogleOAuthProvider>
     );
 }
